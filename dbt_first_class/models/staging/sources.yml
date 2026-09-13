@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: crmuser
+    description: "customer related information"
+    schema: public
+    tables:
+      - name: product
+        description: "this contain account product type in banking domain"
