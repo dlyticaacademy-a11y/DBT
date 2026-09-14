@@ -112,11 +112,7 @@ CREATE TABLE transactions (
     ref_crncy_code VARCHAR(5),
     tran_channel_type VARCHAR(15),
     pstd_flg VARCHAR(1),
-    lchg_time DATE,
-    CONSTRAINT pk_transactions PRIMARY KEY (transaction_key),
-    CONSTRAINT fk_transactions_acid FOREIGN KEY (acid) REFERENCES account(acid),
-    CONSTRAINT fk_transactions_dth_init_sol_id FOREIGN KEY (dth_init_sol_id) REFERENCES branch(branch_sol_id),
-    CONSTRAINT chk_transactions_rule CHECK (tran_date >= DATE '2025-01-01')
+    lchg_time DATE
 );
 
 CREATE TABLE lien (
@@ -135,10 +131,7 @@ CREATE TABLE lien (
     entity_cre_flg VARCHAR(1),
     del_flg VARCHAR(1),
     lchg_user_id VARCHAR(30),
-    lchg_time DATE,
-    CONSTRAINT pk_lien PRIMARY KEY (b2k_id),
-    CONSTRAINT fk_lien_acid FOREIGN KEY (acid) REFERENCES account(acid),
-    CONSTRAINT fk_lien_sol_id FOREIGN KEY (sol_id) REFERENCES branch(branch_sol_id)
+    lchg_time DATE
 );
 
 CREATE TABLE ratelist (
