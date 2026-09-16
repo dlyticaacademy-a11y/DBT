@@ -5,12 +5,15 @@ WITH src AS (
     FROM
         {{ source(
             'crmuser',
-            'customers'
+            'branches'
         ) }}
 ),
 FINAL AS (
     SELECT
-        
+      branch_id,
+      branch_name,
+      city,
+      manager_name
     FROM
         src
 )

@@ -11,7 +11,7 @@ WITH src AS (
     FROM
         {{ source(
             'crmuser',
-            'account'
+            'accounts'
         ) }}
 
 {% if is_incremental() %}

@@ -5,12 +5,17 @@ WITH src AS (
     FROM
         {{ source(
             'crmuser',
-            'customers'
+            'products'
         ) }}
 ),
 FINAL AS (
     SELECT
-        
+      account_id,
+      customer_id,
+      account_type,
+      balance,
+      open_date,
+      status
     FROM
         src
 )

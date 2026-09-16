@@ -3,7 +3,7 @@ dbt_first_class:
     dev:
       dbname: postgres
       host: localhost
-      pass: postgres
+      pass: postgreskopw
       port: 5432
       schema: public
       threads: 2

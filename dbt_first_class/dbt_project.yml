@@ -31,5 +31,5 @@ models:
   dbt_first_class:
     # Config indicated by + and applies to all files under models/example/
     staging:
-      +materialized: view
+      +materialized: table
       +schema: silver
