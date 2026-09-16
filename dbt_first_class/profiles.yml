@@ -1,12 +1,12 @@
 dbt_first_class:
   outputs:
     dev:
-      dbname: postgres
-      host: localhost
-      pass: postgres
-      port: 5432
+      dbname: "{{ env_var('DBT_DATABASE') }}"
+      host: "{{ env_var('DBT_HOST', 'localhost') }}"
+      pass: "{{ env_var('DBT_PASSWORD') }}"
+      port: "{{ env_var('DBT_PORT', '5432') | int }}"
       schema: public
       threads: 2
       type: postgres
-      user: postgres
+      user: "{{ env_var('DBT_USER') }}"
   target: dev
