@@ -3,7 +3,13 @@ version: 2
 sources:
   - name: crmuser
     description: "customer related information"
-    schema: public
+    schema: bronze
     tables:
-      - name: product
-        description: "this contain account product type in banking domain"
+      - name: branch
+        description: "it contains branch information in banking domain"
+      - name: customer
+        description: "it contains customer information in banking domain"
+      - name: account
+        description: "it contains account information in banking domain"
+      - name: transactions
+        description: "it contains transaction information in banking domain"        
