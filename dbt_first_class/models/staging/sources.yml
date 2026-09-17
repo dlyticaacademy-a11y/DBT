@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: crmuser
+    description: "customer related information"
+    schema: bronze
+    tables:
+      - name: account
+        description: "It contains account related information"
+      - name: customer
+        description: "It contains customer information"
+      - name: branch
+        description: "It contains location of bank"
+      - name: transactions
+        description: "It contains transaction related information"
+      - name: lien
+        description: "It contains loan information"
+      - name: ratelist
+        description: "It contains currency rate information"
