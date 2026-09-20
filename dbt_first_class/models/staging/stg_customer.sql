@@ -3,42 +3,21 @@
 ) }}
 
 WITH src AS (
-
-    SELECT
-        *
-    FROM
-        {{ source(
-            'crmuser',
-            'customer'
-        ) }}
-),
-FINAL AS (
-    SELECT
-        cif_id,
-        full_name,
-        cust_first_name,
-        cust_middle_name,
-        cust_last_name,
-        primary_sol_id,
-        crncy_code,
-        occupation,
-        education,
-        riskrating,
-        pan,
-        status,
-        email,
-        phone_home,
-        constitution_code,
-        segmentation_class,
-        staffflag,
-        blacklisted,
-        seniorcitizen,
-        relationshipopeningdate,
-        bodatecreated
-    FROM
-        src
+    SELECT *
+    FROM {{ source('banking', 'customer') }}
 )
+
 SELECT
-    *
-FROM
-    FINAL
+    cust_id,
+    name,
+    address,
+    phone_number,
+    postal_code,
+    country,
+    email,
+    father_name,
+    mother_name,
+    occupation,
+    education,
+    nationality
+FROM src
