@@ -1,0 +1,71 @@
+version: 2
+
+models:
+  - name: dim_branch
+    description: "Bank branch dimension, one row per branch."
+    columns:
+      - name: branch_id
+        description: "Primary key."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_product
+    description: >
+      Bank product/scheme dimension, one row per product, with a derived
+      product_category (Loan vs Deposit) based on schm_type.
+    columns:
+      - name: product_id
+        description: "Primary key."
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_account
+    description: >
+      Grain: one row per account. Carries account_balance and schm_type
+      plus derived is_loan/is_deposit/is_casa flags (LD = loan;
+      SA/CA/FD/RD = deposit; SA/CA = CASA, a subset of deposit) used by
+      fct_loan_deposit_ratio and fct_casa_ratio.
+    columns:
+      - name: account_id
+        description: "Primary key."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "FK to dim_customer (snapshots/dim_customer.sql)."
+      - name: branch_id
+        description: "FK to dim_branch."
+      - name: product_id
+        description: "FK to dim_product."
+
+  - name: fact_account_transactions
+    description: >
+      Grain: one row per NON-CLOSED account (acct_cls_flg = 'N'; closed
+      accounts are excluded entirely). transaction_count and
+      total_transaction_amount are aggregated from hist_transactional via
+      stg_hist_transactional, defaulting to 0 for accounts with no
+      transactions yet.
+    columns:
+      - name: account_id
+        description: "Primary key (always a non-closed account)."
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_loan_deposit_ratio
+    description: >
+      Single-row result: total_loan_balance (schm_type = 'LD'),
+      total_deposit_balance (schm_type in 'SA','CA','FD','RD'), and
+      loan_deposit_ratio = total_loan_balance / total_deposit_balance.
+      Built from fact_account in two simple steps (one CTE per number),
+      not one combined query.
+
+  - name: fct_casa_ratio
+    description: >
+      Single-row result: total_casa_balance (schm_type in 'SA','CA'),
+      total_deposit_balance (schm_type in 'SA','CA','FD','RD'), and
+      casa_ratio = total_casa_balance / total_deposit_balance. Built from
+      fact_account in two simple steps (one CTE per number), not one
+      combined query.

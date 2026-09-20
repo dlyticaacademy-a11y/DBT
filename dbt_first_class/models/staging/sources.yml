@@ -1,15 +1,30 @@
 version: 2
 
 sources:
-  - name: crmuser
-    description: "customer related information"
-    schema: bronze
+  - name: banking
+    description: >
+      Raw banking schema loaded directly into the public schema via
+      SQL FILES/insert_to_postgres.py (SQL FILES/insert.sql): customer,
+      branch, and product are independent master tables; account
+      references all three; card and hist_transactional reference account
+      (hist_transactional also references branch).
+    schema: public
     tables:
-      - name: branch
-        description: "it contains branch information in banking domain"
       - name: customer
-        description: "it contains customer information in banking domain"
+        description: "Customer master data (cust_id is the primary key)."
+      - name: branch
+        description: "Bank branch master data (branch_id is the primary key)."
+      - name: product
+        description: "Bank product/scheme master data (product_id is the primary key)."
       - name: account
-        description: "it contains account information in banking domain"
-      - name: transactions
-        description: "it contains transaction information in banking domain"        
+        description: >
+          Customer accounts (account_id is the primary key), referencing
+          customer, branch, and product.
+      - name: card
+        description: >
+          Debit/credit cards (card_number is the primary key), referencing
+          account.
+      - name: hist_transactional
+        description: >
+          Historical transaction records (tran_id is the primary key),
+          referencing account and branch.
