@@ -1,4 +1,4 @@
-INSERT INTO branch (branch_sol_id, branch_open_date, city_code, address1, address2, branch_code, branch_description, state_code, lchg_user_id, lchg_time) VALUES
+INSERT INTO bronze.branch (branch_sol_id, branch_open_date, city_code, address1, address2, branch_code, branch_description, state_code, lchg_user_id, lchg_time) VALUES
 ('001', DATE '1999-12-30', 'KTM', 'Kamaladi', 'Kathmandu', '02601', 'Nabil Bank Kamaladi Branch', 'Bagmati', 'SYSTEM', DATE '2026-01-07'),
 ('002', DATE '2007-05-04', 'KTM', 'New Road', 'Kathmandu', '02602', 'Nabil Bank New Road Branch', 'Bagmati', 'SYSTEM', DATE '2026-03-04'),
 ('003', DATE '2005-01-05', 'KTM', 'Durbarmarg', 'Kathmandu', '02603', 'Nabil Bank Durbarmarg Branch', 'Bagmati', 'SYSTEM', DATE '2026-02-05'),

@@ -3,10 +3,10 @@ dbt_first_class:
     dev:
       dbname: postgres
       host: localhost
-      pass: postgres
+      pass: ""
       port: 5432
       schema: public
       threads: 2
       type: postgres
-      user: postgres
+      user: newanatandukar
   target: dev

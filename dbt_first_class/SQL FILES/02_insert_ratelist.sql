@@ -1,6 +1,6 @@
 -- INSERT statements for ratelist (100 rows)
 
-INSERT INTO ratelist (rtlist_date, rtlist_num, fxd_crncy_code, var_crncy_code, ratecode, fxd_crncy_units, var_crncy_units, cust_var_crncy_units, low_slab_amt, high_slab_amt, slab_crncy_code, srl_num, bank_id, lchg_user_id, lchg_time) VALUES
+INSERT INTO bronze.ratelist (rtlist_date, rtlist_num, fxd_crncy_code, var_crncy_code, ratecode, fxd_crncy_units, var_crncy_units, cust_var_crncy_units, low_slab_amt, high_slab_amt, slab_crncy_code, srl_num, bank_id, lchg_user_id, lchg_time) VALUES
 (DATE '2026-08-28', 1, 'USD', 'NPR', 'CSB', 1, 136.8125, 136.8125, 0, 999999999, 'USD', 1, '003', 'SYSTEM', DATE '2026-08-28'),
 (DATE '2026-08-28', 1, 'USD', 'NPR', 'NCB', 1, 136.125, 136.125, 0, 999999999, 'USD', 2, '003', 'SYSTEM', DATE '2026-08-28'),
 (DATE '2026-08-28', 1, 'USD', 'NPR', 'SEL', 1, 138.325, 138.325, 0, 999999999, 'USD', 3, '003', 'SYSTEM', DATE '2026-08-28'),

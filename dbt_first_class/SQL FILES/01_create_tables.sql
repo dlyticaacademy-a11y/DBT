@@ -3,14 +3,16 @@
 -- Dialect: ANSI SQL / PostgreSQL-compatible
 -- ============================================================
 
-DROP TABLE IF EXISTS branch CASCADE;
-DROP TABLE IF EXISTS customer CASCADE;
-DROP TABLE IF EXISTS account CASCADE;
-DROP TABLE IF EXISTS transactions CASCADE;
-DROP TABLE IF EXISTS lien CASCADE;
-DROP TABLE IF EXISTS ratelist CASCADE;
+CREATE SCHEMA IF NOT EXISTS bronze;
 
-CREATE TABLE branch (
+DROP TABLE IF EXISTS bronze.branch CASCADE;
+DROP TABLE IF EXISTS bronze.customer CASCADE;
+DROP TABLE IF EXISTS bronze.account CASCADE;
+DROP TABLE IF EXISTS bronze.transactions CASCADE;
+DROP TABLE IF EXISTS bronze.lien CASCADE;
+DROP TABLE IF EXISTS bronze.ratelist CASCADE;
+
+CREATE TABLE bronze.branch (
     branch_sol_id VARCHAR(10),
     branch_open_date DATE,
     city_code VARCHAR(10),
@@ -24,7 +26,7 @@ CREATE TABLE branch (
     CONSTRAINT pk_branch PRIMARY KEY (branch_sol_id)
 );
 
-CREATE TABLE customer (
+CREATE TABLE bronze.customer (
     cif_id VARCHAR(15),
     full_name VARCHAR(150),
     cust_first_name VARCHAR(50),
@@ -47,10 +49,10 @@ CREATE TABLE customer (
     relationshipopeningdate DATE,
     bodatecreated DATE,
     CONSTRAINT pk_customer PRIMARY KEY (cif_id),
-    CONSTRAINT fk_customer_primary_sol_id FOREIGN KEY (primary_sol_id) REFERENCES branch(branch_sol_id)
+    CONSTRAINT fk_customer_primary_sol_id FOREIGN KEY (primary_sol_id) REFERENCES bronze.branch(branch_sol_id)
 );
 
-CREATE TABLE account (
+CREATE TABLE bronze.account (
     acid VARCHAR(15),
     foracid VARCHAR(16),
     cif_id VARCHAR(15),
@@ -81,12 +83,12 @@ CREATE TABLE account (
     lchg_time DATE,
     CONSTRAINT pk_account PRIMARY KEY (acid),
     CONSTRAINT uq_account_foracid UNIQUE (foracid),
-    CONSTRAINT fk_account_cif_id FOREIGN KEY (cif_id) REFERENCES customer(cif_id),
-    CONSTRAINT fk_account_sol_id FOREIGN KEY (sol_id) REFERENCES branch(branch_sol_id),
+    CONSTRAINT fk_account_cif_id FOREIGN KEY (cif_id) REFERENCES bronze.customer(cif_id),
+    CONSTRAINT fk_account_sol_id FOREIGN KEY (sol_id) REFERENCES bronze.branch(branch_sol_id),
     CONSTRAINT chk_account_rule CHECK (acct_ownership IN ('C','O','E'))
 );
 
-CREATE TABLE transactions (
+CREATE TABLE bronze.transactions (
     transaction_key VARCHAR(30),
     tran_id VARCHAR(15),
     part_tran_srl_num SMALLINT,
@@ -114,12 +116,12 @@ CREATE TABLE transactions (
     pstd_flg VARCHAR(1),
     lchg_time DATE,
     CONSTRAINT pk_transactions PRIMARY KEY (transaction_key),
-    CONSTRAINT fk_transactions_acid FOREIGN KEY (acid) REFERENCES account(acid),
-    CONSTRAINT fk_transactions_dth_init_sol_id FOREIGN KEY (dth_init_sol_id) REFERENCES branch(branch_sol_id),
+    CONSTRAINT fk_transactions_acid FOREIGN KEY (acid) REFERENCES bronze.account(acid),
+    CONSTRAINT fk_transactions_dth_init_sol_id FOREIGN KEY (dth_init_sol_id) REFERENCES bronze.branch(branch_sol_id),
     CONSTRAINT chk_transactions_rule CHECK (tran_date >= DATE '2025-01-01')
 );
 
-CREATE TABLE lien (
+CREATE TABLE bronze.lien (
     b2k_id VARCHAR(40),
     acid VARCHAR(15),
     sol_id VARCHAR(10),
@@ -137,11 +139,11 @@ CREATE TABLE lien (
     lchg_user_id VARCHAR(30),
     lchg_time DATE,
     CONSTRAINT pk_lien PRIMARY KEY (b2k_id),
-    CONSTRAINT fk_lien_acid FOREIGN KEY (acid) REFERENCES account(acid),
-    CONSTRAINT fk_lien_sol_id FOREIGN KEY (sol_id) REFERENCES branch(branch_sol_id)
+    CONSTRAINT fk_lien_acid FOREIGN KEY (acid) REFERENCES bronze.account(acid),
+    CONSTRAINT fk_lien_sol_id FOREIGN KEY (sol_id) REFERENCES bronze.branch(branch_sol_id)
 );
 
-CREATE TABLE ratelist (
+CREATE TABLE bronze.ratelist (
     rtlist_date DATE,
     rtlist_num SMALLINT,
     fxd_crncy_code VARCHAR(5),

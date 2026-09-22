@@ -1,6 +1,6 @@
 -- INSERT statements for lien (48 rows)
 
-INSERT INTO lien (b2k_id, acid, sol_id, lien_amt, lien_reason_code, lien_remarks, lien_start_date, lien_expiry_date, requested_by_desc, request_department, contact_num, b2k_type, entity_cre_flg, del_flg, lchg_user_id, lchg_time) VALUES
+INSERT INTO bronze.lien (b2k_id, acid, sol_id, lien_amt, lien_reason_code, lien_remarks, lien_start_date, lien_expiry_date, requested_by_desc, request_department, contact_num, b2k_type, entity_cre_flg, del_flg, lchg_user_id, lchg_time) VALUES
 ('202407001-CDS-000000001', '900000246', '005', 3000, 'CASBA', 'FPO subscription lien via Vijaya Laghubitta', DATE '2024-07-23', DATE '2025-07-23', 'BRANCH OPERATIONS', 'OPERATIONS', '01-4294620', 'ULIEN', 'Y', 'N', 'SYSTEM', DATE '2024-07-23'),
 ('202407002-CDS-000000002', '900000246', '005', 50000, 'CASBA', 'Loan margin lien', DATE '2024-07-17', DATE '2024-10-15', 'BRANCH OPERATIONS', 'OPERATIONS', '01-4777444', 'ULIEN', 'Y', 'N', 'SYSTEM', DATE '2024-07-17'),
 ('202312003-CDS-000000003', '900000196', '014', 10000, 'COURT', 'Loan margin lien', DATE '2023-12-24', DATE '2024-03-23', 'BRANCH OPERATIONS', 'OPERATIONS', '01-4691174', 'ULIEN', 'Y', 'N', 'SYSTEM', DATE '2023-12-24'),

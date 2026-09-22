@@ -1,6 +1,6 @@
 -- INSERT statements for customer (190 rows)
 
-INSERT INTO customer (cif_id, full_name, cust_first_name, cust_middle_name, cust_last_name, primary_sol_id, crncy_code, occupation, education, riskrating, pan, status, email, phone_home, constitution_code, segmentation_class, staffflag, blacklisted, seniorcitizen, relationshipopeningdate, bodatecreated) VALUES
+INSERT INTO bronze.customer (cif_id, full_name, cust_first_name, cust_middle_name, cust_last_name, primary_sol_id, crncy_code, occupation, education, riskrating, pan, status, email, phone_home, constitution_code, segmentation_class, staffflag, blacklisted, seniorcitizen, relationshipopeningdate, bodatecreated) VALUES
 ('100000001', 'RITA KUMAR KHATRI', 'Rita', 'Kumar', 'Khatri', '013', 'NPR', 'PRIVATE SERVICE', 'MASTER', 'MEDIUM', '764130526', 'ACTIVE', 'rita.khatri47@gmail.com', '9848745446', 'I001', 'PRIORITY', 'N', 'N', 'Y', DATE '2006-10-08', DATE '2006-10-08'),
 ('100000002', 'SANTOSH DEVI THAPA', 'Santosh', 'Devi', 'Thapa', '008', 'NPR', 'SERVICE', 'INTERMEDIATE', 'LOW', '782560971', 'ACTIVE', 'santosh.thapa47@gmail.com', '9820915531', 'I002', 'RETAIL', 'N', 'N', 'N', DATE '2024-06-08', DATE '2024-06-08'),
 ('100000003', 'ASHOK PRASAD PRADHAN', 'Ashok', 'Prasad', 'Pradhan', '024', 'NPR', 'STUDENT', 'INTERMEDIATE', 'LOW', '787194506', 'ACTIVE', 'ashok.pradhan89@gmail.com', '9847376264', 'I001', 'RETAIL', 'N', 'N', 'N', DATE '2010-06-29', DATE '2010-06-29'),
