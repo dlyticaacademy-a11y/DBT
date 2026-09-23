@@ -1,0 +1,127 @@
+title: "Banking Portfolio Overview"
+source: analytics
+
+queries:
+  casa_ratio_q:
+    sql: |
+      SELECT total_casa_balance, total_deposit_balance, casa_ratio
+      FROM postgres.gold.fct_casa_ratio
+
+  loan_deposit_q:
+    sql: |
+      SELECT total_loan_balance, total_deposit_balance, loan_deposit_ratio
+      FROM postgres.gold.fct_loan_deposit_ratio
+
+  branch_balance_q:
+    sql: |
+      SELECT
+          b.branch_name,
+          SUM(a.account_balance) AS total_balance
+      FROM postgres.gold.fact_account a
+      JOIN postgres.gold.dim_branch b ON a.branch_id = b.branch_id
+      WHERE a.is_closed = FALSE
+      GROUP BY 1
+      ORDER BY 2 DESC
+      LIMIT 15
+
+  product_mix_q:
+    sql: |
+      -- loan balances are stored as negative (money owed to the bank);
+      -- ABS() so both slices represent a magnitude, not a signed balance
+      SELECT
+          p.product_category,
+          SUM(ABS(a.account_balance)) AS balance
+      FROM postgres.gold.fact_account a
+      JOIN postgres.gold.dim_product p ON a.product_id = p.product_id
+      GROUP BY 1
+
+  txn_by_branch_q:
+    sql: |
+      SELECT
+          b.branch_name,
+          SUM(t.total_transaction_amount) AS txn_amount
+      FROM postgres.gold.fact_account_transactions t
+      JOIN postgres.gold.dim_branch b ON t.branch_id = b.branch_id
+      GROUP BY 1
+      ORDER BY 2 DESC
+      LIMIT 15
+
+  txn_trend_q:
+    sql: |
+      SELECT
+          date_trunc('month', transaction_date) AS month,
+          SUM(transaction_amount) AS amount
+      FROM postgres.silver.stg_hist_transactional
+      GROUP BY 1
+      ORDER BY 1
+
+charts:
+  casa_kpi:
+    type: kpi
+    query: casa_ratio_q
+    value: casa_ratio
+    label: "CASA Ratio"
+    style:
+      value:
+        format: percent
+
+  loan_deposit_kpi:
+    type: kpi
+    query: loan_deposit_q
+    value: loan_deposit_ratio
+    label: "Loan / Deposit Ratio"
+    style:
+      value:
+        format: percent
+
+  branch_balance_bar:
+    type: bar
+    query: branch_balance_q
+    x: branch_name
+    y: total_balance
+    title: "Total Balance by Branch (Top 15)"
+    style:
+      axis_y:
+        labels:
+          format: currency
+
+  product_mix_pie:
+    type: pie
+    query: product_mix_q
+    theta: balance
+    color: product_category
+    title: "Deposit vs Loan Mix"
+
+  txn_by_branch_bar:
+    type: bar
+    query: txn_by_branch_q
+    x: branch_name
+    y: txn_amount
+    title: "Transaction Volume by Branch"
+    style:
+      axis_y:
+        labels:
+          format: currency
+
+  txn_trend_line:
+    type: line
+    query: txn_trend_q
+    x: month
+    y: amount
+    title: "Monthly Transaction Volume Trend"
+    style:
+      axis_y:
+        labels:
+          format: currency
+
+rows:
+  - cols:
+      - casa_kpi
+      - loan_deposit_kpi
+  - cols:
+      - branch_balance_bar
+      - product_mix_pie
+  - cols:
+      - txn_by_branch_bar
+  - cols:
+      - txn_trend_line

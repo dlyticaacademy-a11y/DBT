@@ -37,7 +37,17 @@ models:
       +materialized: table
       +schema: gold
 
+snapshots:
+  dbt_first_class:
+    +schema: gold
+
+seeds:
+  dbt_first_class:
+    +schema: silver
+
 vars:
-  # Nepal-local timezone used as the default target tz for dbt_date macros
-  # such as now(), today(), week_start(), etc. when no tz argument is passed.
-  "dbt_date:time_zone": "Asia/Kathmandu"
+  source_database: postgres
+  source_schema: public
+  USD: 150
+  AUD: 100
+  INR: 1.6

@@ -2,7 +2,6 @@
     materialized = 'table'
 ) }}
 
--- Step 1: total balance of CASA accounts only (is_casa = TRUE means schm_type IN ('SA','CA'))
 WITH casa_balance AS (
 
     SELECT
@@ -14,7 +13,6 @@ WITH casa_balance AS (
 
 ),
 
--- Step 2: total balance of deposit accounts (is_deposit = TRUE means schm_type IN ('SA','CA','FD','RD'))
 deposit_balance AS (
 
     SELECT
@@ -26,7 +24,6 @@ deposit_balance AS (
 
 )
 
--- Step 3: casa / deposit ratio
 SELECT
     casa_balance.total_casa_balance,
     deposit_balance.total_deposit_balance,

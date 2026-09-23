@@ -1,0 +1,363 @@
+version: 2
+
+models:
+  - name: stg_customer
+    description: "Staged customer master data, one row per customer."
+    columns:
+      - name: cust_id
+        description: "Unique customer identifier."
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: "Customer's full name."
+      - name: address
+        description: "Customer's mailing address."
+      - name: phone_number
+        description: "Customer's contact phone number."
+      - name: postal_code
+        description: "Postal code for the customer's address."
+      - name: country
+        description: "Customer's country of residence."
+      - name: email
+        description: "Customer's email address."
+      - name: father_name
+        description: "Customer's father's name."
+      - name: mother_name
+        description: "Customer's mother's name."
+      - name: occupation
+        description: "Customer's occupation."
+      - name: education
+        description: "Customer's highest recorded education level."
+      - name: nationality
+        description: "Customer's nationality."
+
+  - name: stg_branch
+    description: "Staged branch master data, one row per bank branch."
+    columns:
+      - name: branch_id
+        description: "Unique branch identifier."
+        tests:
+          - unique
+          - not_null
+      - name: province
+        description: "Province where the branch operates."
+      - name: cluster_name
+        description: "Operational cluster containing the branch."
+      - name: city_name
+        description: "City where the branch is located."
+      - name: branch_name
+        description: "Display name of the branch."
+
+  - name: stg_product
+    description: "Staged banking product master data, one row per product."
+    columns:
+      - name: product_id
+        description: "Unique banking product identifier."
+        tests:
+          - unique
+          - not_null
+      - name: schm_type
+        description: "Product scheme type: savings, current, fixed, recurring, or loan."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["SA", "CA", "FD", "RD", "LD"]
+      - name: schm_code
+        description: "Product scheme code."
+        tests:
+          - not_null
+      - name: product_desc
+        description: "Human-readable product description."
+
+  - name: stg_account
+    description: "Staged account data, incrementally merged by account_id and lchg_time."
+    columns:
+      - name: account_id
+        description: "Unique account identifier."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Customer who owns the account."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customer')
+                field: cust_id
+      - name: branch_id
+        description: "Branch servicing the account."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_branch')
+                field: branch_id
+      - name: account_balance
+        description: "Current account balance; loan accounts may be negative."
+      - name: lien_amt
+        description: "Amount of the account balance placed under lien."
+      - name: acct_cls_flg
+        description: "Account closure flag: Y for closed and N for open."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["Y", "N"]
+      - name: product_id
+        description: "Banking product attached to the account."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_product')
+                field: product_id
+      - name: schm_type
+        description: "Scheme type for the account."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["SA", "CA", "FD", "RD", "LD"]
+      - name: schm_code
+        description: "Scheme code for the account."
+      - name: acct_crncy_code
+        description: "Three-letter currency code used by the account."
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "NPR",
+                    "USD",
+                    "AUD",
+                    "EUR",
+                    "GBP",
+                    "INR",
+                    "SGD",
+                    "AED",
+                    "JPY",
+                    "CAD",
+                  ]
+      - name: lchg_time
+        description: "Timestamp of the last account change, used for incremental loading."
+        tests:
+          - not_null
+
+  - name: stg_card
+    description: "Staged debit and credit card data, one row per card."
+    columns:
+      - name: card_number
+        description: "Unique card number."
+        tests:
+          - unique
+          - not_null
+      - name: account_id
+        description: "Account linked to the card."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_account')
+                field: account_id
+      - name: balance
+        description: "Current balance associated with the card."
+      - name: card_type
+        description: "Card type, either debit or credit."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["DEBIT", "CREDIT"]
+      - name: closing_balance
+        description: "Most recent closing balance, primarily applicable to credit cards."
+      - name: card_expiry_date
+        description: "Date on which the card expires."
+
+  - name: stg_hist_transactional
+    description: "Staged historical transactions, appended incrementally by transaction date."
+    columns:
+      - name: transaction_id
+        description: "Unique transaction identifier."
+        tests:
+          - unique
+          - not_null
+      - name: account_id
+        description: "Account associated with the transaction."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_account')
+                field: account_id
+      - name: branch_id
+        description: "Branch associated with the transaction."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_branch')
+                field: branch_id
+      - name: transaction_amount
+        description: "Non-negative transaction amount."
+        tests:
+          - not_null
+      - name: transaction_currency
+        description: "Currency code used for the transaction."
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "NPR",
+                    "USD",
+                    "AUD",
+                    "EUR",
+                    "GBP",
+                    "INR",
+                    "SGD",
+                    "AED",
+                    "JPY",
+                    "CAD",
+                  ]
+      - name: transaction_date
+        description: "Business date on which the transaction occurred."
+        tests:
+          - not_null
+      - name: transaction_particular
+        description: "Business description or transaction type."
+      - name: transaction_remarks
+        description: "Additional transaction remarks."
+      - name: created_date
+        description: "Timestamp when the transaction record was created."
+        tests:
+          - not_null
+      - name: modified_date
+        description: "Timestamp when the transaction record was last modified."
+        tests:
+          - not_null
+
+  - name: hist_microbatch
+    description: "Microbatch version of the historical transaction staging model."
+    columns:
+      - name: transaction_id
+        description: "Unique transaction identifier."
+        tests:
+          - unique
+          - not_null
+      - name: account_id
+        description: "Account associated with the transaction."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_account')
+                field: account_id
+      - name: branch_id
+        description: "Branch associated with the transaction."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_branch')
+                field: branch_id
+      - name: transaction_amount
+        description: "Non-negative transaction amount."
+        tests:
+          - not_null
+      - name: transaction_currency
+        description: "Currency code used for the transaction."
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "NPR",
+                    "USD",
+                    "AUD",
+                    "EUR",
+                    "GBP",
+                    "INR",
+                    "SGD",
+                    "AED",
+                    "JPY",
+                    "CAD",
+                  ]
+      - name: tran_date
+        description: "Business date used as the microbatch event time."
+        tests:
+          - not_null
+      - name: transaction_particular
+        description: "Business description or transaction type."
+      - name: transaction_remarks
+        description: "Additional transaction remarks."
+      - name: created_date
+        description: "Timestamp when the transaction record was created."
+        tests:
+          - not_null
+      - name: modified_date
+        description: "Timestamp when the transaction record was last modified."
+        tests:
+          - not_null
+
+  - name: hist_vars
+    description: "Microbatch transaction staging model used for incremental experiments."
+    columns:
+      - name: transaction_id
+        description: "Unique transaction identifier."
+        tests:
+          - unique
+          - not_null
+      - name: account_id
+        description: "Account associated with the transaction."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_account')
+                field: account_id
+      - name: branch_id
+        description: "Branch associated with the transaction."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_branch')
+                field: branch_id
+      - name: transaction_amount
+        description: "Non-negative transaction amount."
+        tests:
+          - not_null
+      - name: transaction_currency
+        description: "Currency code used for the transaction."
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "NPR",
+                    "USD",
+                    "AUD",
+                    "EUR",
+                    "GBP",
+                    "INR",
+                    "SGD",
+                    "AED",
+                    "JPY",
+                    "CAD",
+                  ]
+      - name: converted_currency
+        description: "Transaction amount converted using the configured USD, AUD, or INR rate."
+      - name: tran_date
+        description: "Business date used as the microbatch event time."
+        tests:
+          - not_null
+      - name: transaction_particular
+        description: "Business description or transaction type."
+      - name: transaction_remarks
+        description: "Additional transaction remarks."
+      - name: created_date
+        description: "Timestamp when the transaction record was created."
+        tests:
+          - not_null
+      - name: modified_date
+        description: "Timestamp when the transaction record was last modified."
+        tests:
+          - not_null

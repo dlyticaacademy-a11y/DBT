@@ -2,7 +2,6 @@
 
 {{
     config(
-        target_schema='silver',
         unique_key='cust_id',
         strategy='check',
         check_cols='all',

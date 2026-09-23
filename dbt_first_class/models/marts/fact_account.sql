@@ -2,7 +2,7 @@
     materialized = 'table'
 ) }}
 
-
+-- casa ratio = (current account + saving account )/total deposit (SA,CA,FD,RD)
 SELECT
     account_id,
     customer_id,

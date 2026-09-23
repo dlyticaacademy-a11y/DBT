@@ -8,7 +8,8 @@ sources:
       branch, and product are independent master tables; account
       references all three; card and hist_transactional reference account
       (hist_transactional also references branch).
-    schema: public
+    database: "{{ var('source_database') }}"
+    schema: "{{ var('source_schema') }}"
     tables:
       - name: customer
         description: "Customer master data (cust_id is the primary key)."
@@ -28,3 +29,5 @@ sources:
         description: >
           Historical transaction records (tran_id is the primary key),
           referencing account and branch.
+        config:
+          event_time: tran_date

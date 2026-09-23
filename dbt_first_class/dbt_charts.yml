@@ -1,0 +1,5 @@
+sources:
+  analytics:
+    type: dbt_profile
+    profile: dbt_first_class
+    target: dev

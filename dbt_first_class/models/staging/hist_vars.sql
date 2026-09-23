@@ -28,7 +28,6 @@ renamed as (
           WHEN tran_crncy = 'INR' THEN  tran_amount* {{var('INR')}}
         ELSE tran_amount
         END as converted_currency,
-        {{ currency_label('tran_crncy') }} as currency_name,
         tran_date         as transaction_date,
         tran_particular   as transaction_particular,
         tran_remarks      as transaction_remarks,
